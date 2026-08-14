@@ -59,16 +59,17 @@ export const ANTIGRAVITY_ROUTING: Record<string, AntigravityRouting> = {
     defaultRequestId: "gemini-3.1-pro-low",
   },
   "gemini-3.7-flash": {
-    // agy models: gemini-3.7-flash-low / -medium / -high
-    off: "gemini-3.7-flash-low",
+    // The live catalog exposes one adaptive runtime. agy projects its Low / Medium / High
+    // UI choices from this entry, but the Cloud Code Assist API accepts the tiered ID.
+    off: "gemini-3.7-flash-tiered",
     routing: {
-      minimal: "gemini-3.7-flash-low",
-      low: "gemini-3.7-flash-low",
-      medium: "gemini-3.7-flash-medium",
-      high: "gemini-3.7-flash-high",
-      xhigh: "gemini-3.7-flash-high",
+      minimal: "gemini-3.7-flash-tiered",
+      low: "gemini-3.7-flash-tiered",
+      medium: "gemini-3.7-flash-tiered",
+      high: "gemini-3.7-flash-tiered",
+      xhigh: "gemini-3.7-flash-tiered",
     },
-    defaultRequestId: "gemini-3.7-flash-low",
+    defaultRequestId: "gemini-3.7-flash-tiered",
   },
   "gemini-3.6-flash": {
     // agy models: gemini-3.6-flash-low / -medium / -high
@@ -115,6 +116,7 @@ export const RUNTIME_MAX_OUTPUT_TOKENS: Record<string, number> = {
   "gemini-3.7-flash-low": 65536,
   "gemini-3.7-flash-medium": 65536,
   "gemini-3.7-flash-high": 65536,
+  "gemini-3.7-flash-tiered": 65536,
   "gemini-3.6-flash": 65536,
   "gemini-3.6-flash-low": 65536,
   "gemini-3.6-flash-medium": 65536,

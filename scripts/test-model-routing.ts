@@ -19,13 +19,13 @@ import {
 const route = (model: string, effort?: string) => getAntigravityRequestModelId(model, effort);
 
 const routeCases: Array<[string, string | undefined, string]> = [
-  ["gemini-3.7-flash", undefined, "gemini-3.7-flash-low"],
-  ["gemini-3.7-flash", "off", "gemini-3.7-flash-low"],
-  ["gemini-3.7-flash", "minimal", "gemini-3.7-flash-low"],
-  ["gemini-3.7-flash", "low", "gemini-3.7-flash-low"],
-  ["gemini-3.7-flash", "medium", "gemini-3.7-flash-medium"],
-  ["gemini-3.7-flash", "high", "gemini-3.7-flash-high"],
-  ["gemini-3.7-flash", "xhigh", "gemini-3.7-flash-high"],
+  ["gemini-3.7-flash", undefined, "gemini-3.7-flash-tiered"],
+  ["gemini-3.7-flash", "off", "gemini-3.7-flash-tiered"],
+  ["gemini-3.7-flash", "minimal", "gemini-3.7-flash-tiered"],
+  ["gemini-3.7-flash", "low", "gemini-3.7-flash-tiered"],
+  ["gemini-3.7-flash", "medium", "gemini-3.7-flash-tiered"],
+  ["gemini-3.7-flash", "high", "gemini-3.7-flash-tiered"],
+  ["gemini-3.7-flash", "xhigh", "gemini-3.7-flash-tiered"],
   ["gemini-3.6-flash", undefined, "gemini-3.6-flash-low"],
   ["gemini-3.6-flash", "off", "gemini-3.6-flash-low"],
   ["gemini-3.6-flash", "minimal", "gemini-3.6-flash-low"],
