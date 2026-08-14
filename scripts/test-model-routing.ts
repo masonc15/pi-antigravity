@@ -122,6 +122,49 @@ assert.ok(geminiDeclaration?.parametersJsonSchema, "Gemini must use parametersJs
 assert.equal(geminiDeclaration?.parameters, undefined);
 assert.deepEqual(geminiDeclaration?.parametersJsonSchema, booleanUnionTool.parameters);
 
+const localRefTool = {
+  name: "local_ref",
+  description: "Exercises MCP schemas that use local $defs references.",
+  parameters: {
+    type: "object",
+    properties: {
+      cookies: {
+        type: "array",
+        items: { $ref: "#/$defs/Cookie" },
+      },
+    },
+    $defs: {
+      Cookie: {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+          value: { type: "string" },
+        },
+        required: ["name", "value"],
+      },
+    },
+  },
+} as Tool;
+const localRefSchema = convertTools([localRefTool])?.[0]?.functionDeclarations[0]
+  ?.parametersJsonSchema as Record<string, unknown>;
+assert.ok(!JSON.stringify(localRefSchema).includes("$ref"), "local $refs must be inlined");
+assert.deepEqual(localRefSchema, {
+  type: "object",
+  properties: {
+    cookies: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+          value: { type: "string" },
+        },
+        required: ["name", "value"],
+      },
+    },
+  },
+});
+
 const openObjectTool = {
   name: "todo_like",
   description: "Open object fields",

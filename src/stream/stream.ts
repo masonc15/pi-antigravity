@@ -173,6 +173,47 @@ export function convertMessages(
   return contents;
 }
 
+function resolveLocalSchemaRef(root: unknown, ref: string): unknown {
+  if (!ref.startsWith("#/")) return undefined;
+  let current = root;
+  for (const encoded of ref.slice(2).split("/")) {
+    if (!isRecord(current)) return undefined;
+    const segment = encoded.replaceAll("~1", "/").replaceAll("~0", "~");
+    if (!Object.prototype.hasOwnProperty.call(current, segment)) return undefined;
+    current = current[segment];
+  }
+  return current;
+}
+
+function inlineLocalSchemaRefs(
+  schema: unknown,
+  root: unknown = schema,
+  resolving = new Set<string>(),
+): unknown {
+  if (!schema || typeof schema !== "object") return schema;
+  if (Array.isArray(schema)) {
+    return schema.map((value) => inlineLocalSchemaRefs(value, root, resolving));
+  }
+  if (!isRecord(schema)) return schema;
+
+  const ref = typeof schema.$ref === "string" ? schema.$ref : undefined;
+  if (ref && !resolving.has(ref)) {
+    const target = resolveLocalSchemaRef(root, ref);
+    if (isRecord(target)) {
+      const nextResolving = new Set(resolving).add(ref);
+      const siblings = Object.fromEntries(Object.entries(schema).filter(([key]) => key !== "$ref"));
+      return inlineLocalSchemaRefs({ ...target, ...siblings }, root, nextResolving);
+    }
+  }
+
+  return Object.fromEntries(
+    Object.entries(schema).map(([key, value]) => [
+      key,
+      inlineLocalSchemaRefs(value, root, resolving),
+    ]),
+  );
+}
+
 function stripMetaSchema(schema: unknown): unknown {
   if (!schema || typeof schema !== "object" || Array.isArray(schema)) return schema;
   const omit = new Set([
@@ -265,7 +306,7 @@ export function convertTools(
   return [
     {
       functionDeclarations: tools.map((tool) => {
-        const schema = stripMetaSchema(tool.parameters);
+        const schema = stripMetaSchema(inlineLocalSchemaRefs(tool.parameters));
         return {
           name: tool.name,
           description: tool.description,
